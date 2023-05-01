@@ -23,7 +23,8 @@ docker-compose up -d
 # `Добавление товара` #
 ### Request
 ```rb
-curl --location 'http://localhost/api/Product' \
+curl -X 'POST' \
+'http://localhost/api/Product' \
 --header 'Content-Type: application/json' \
 --data '{
   "name": "Смартфон Apple iPhone 14 Pro 128 ГБ",
