@@ -80,21 +80,20 @@ curl -X 'POST' \
 # `Редактирование заказа` #
 ### Request
 ```rb
-curl -X 'POST' \
-  'http://localhost:8081/api/Order' \
+curl -X 'PUT' \
+  'http://localhost:8081/api/Order/3fa85f64-5717-4562-b3fc-2c963f66afa6' \
   -H 'accept: text/plain' \
   -H 'Content-Type: application/json' \
   -d '{
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "status": "Paid",
   "lines": [
     {
       "id": "430b285e-0242-4f19-b59b-ff1e144d0027",
-      "qty": 3
+      "qty": 12
     },
     {
-      "id": "19b8cebd-f6a3-4bb9-b6cb-6aab0e7a4cac",
-      "qty": 4
+      "id": "e5899c21-2146-421d-8cb2-2d2e8995046d",
+      "qty": 1
     }
   ]
 }'
@@ -105,17 +104,16 @@ curl -X 'POST' \
 {
   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "status": "Paid",
-  "created": "2023-04-30 20:07:18",
+  "created": "2023-05-01T16:33:09.494964",
   "lines": [
     {
       "id": "430b285e-0242-4f19-b59b-ff1e144d0027",
-      "qty": 3
+      "qty": 12
     },
     {
-      "id": "19b8cebd-f6a3-4bb9-b6cb-6aab0e7a4cac",
-      "qty": 4
+      "id": "e5899c21-2146-421d-8cb2-2d2e8995046d",
+      "qty": 1
     }
-    
   ]
 }
 ```
