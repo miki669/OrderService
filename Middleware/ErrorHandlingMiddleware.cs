@@ -50,7 +50,7 @@ public class ErrorHandlingMiddleware
         }
         else if (exception is OrderDeletionException) 
         {
-            code = HttpStatusCode.Unauthorized;
+            code = HttpStatusCode.Conflict;
         }
         else if (exception is InvalidStatusException)
         {

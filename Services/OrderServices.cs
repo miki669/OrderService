@@ -59,9 +59,9 @@ public class OrderServices : IOrderServices
                 Product = new Product()
                 {
                     Id = item.Id,
-                   
                 },
-                Qty = item.Qty
+                Qty = item.Qty,
+                
             };
             _context.Attach(orderProduct.Product);
             order.OrderProducts.Add(orderProduct);
@@ -94,21 +94,26 @@ public class OrderServices : IOrderServices
         if (order is null)
             throw new OrderNotFoundException($"Order with id: {Id} not found!");
         if (order.Status > OrderStatus.WaitingForPayment)
-            throw new OrderDeletionException(
-                "Cannot edit an order in the 'Paid', 'InDelivery', 'Delivered' or 'Completed' status.");
-
-
+            throw new OrderDeletionException("Cannot edit an order in the 'Paid', 'InDelivery', 'Delivered' or 'Completed' status.");
+        
+        _context.OrderProducts.RemoveRange(order.OrderProducts);
+        await _context.SaveChangesAsync();
+        
         foreach (var item in editOrderRequestDto.Lines)
         {
             if (item.Qty <= 0)
                 continue;
-            /*
-         в случае, если нужно кидать исключение
+/*      в случае, если нужно кидать исключение
          if (item.Qty <= 0)
            throw new NegativeOrZeroQuantityException("Order line quantity cannot be negative or zero");
-           */
+*/
             if (order.OrderProducts.Any(op => op.Product.Id == item.Id))
                 continue;
+            var existingProduct = await _context.Products.FindAsync(item.Id);
+            if (existingProduct != null)
+            {
+                _context.Entry(existingProduct).State = EntityState.Detached;
+            }
             var orderProduct = new OrderProduct()
             {
                 Product = new Product()
@@ -121,7 +126,8 @@ public class OrderServices : IOrderServices
             _context.Attach(orderProduct.Product);
             order.OrderProducts.Add(orderProduct);
         }
-
+        if (order.OrderProducts.Count == 0)
+            throw new ZeroQuantityException("Line cannot be zero");
         order.Status = editOrderRequestDto.OrderStatus;
         _context.Orders.Update(order);
         await _context.SaveChangesAsync();
